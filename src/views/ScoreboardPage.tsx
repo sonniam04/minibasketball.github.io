@@ -85,7 +85,7 @@ const Scoreboard = () => {
       clearInterval(interval);
     }
     if (duration == 0) {
-      playBuzzer()
+
       setDuration(time)
       if (Number(quater) < round) {
         setQuater((prev: String) => String(Number(prev) + 1))
@@ -106,29 +106,6 @@ const Scoreboard = () => {
     }
     return timeMinute + ":" + timeSecond
   }
-  const playBuzzer = () => {
-    try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-
-      oscillator.type = 'square'; // คลื่นเสียงสี่เหลี่ยมจะให้เสียงแผดๆ เหมือนนาฬิกาสนาม
-      oscillator.frequency.value = 150; // ความถี่ต่ำเพื่อให้ได้เสียงที่ดุดัน
-
-      oscillator.start();
-
-      // ควบคุมความดังให้ค่อยๆ หายไปใน 1.5 วินาที
-      gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.5, audioCtx.currentTime + 1.5);
-
-      oscillator.stop(audioCtx.currentTime + 1.5);
-    } catch (e) {
-      console.error("Browser does not support Web Audio API", e);
-    }
-  };
   return (
     <div className="h-[100dvh] w-full bg-[#110d0a] text-white flex flex-col overflow-hidden font-sans select-none p-2">
 
