@@ -1,4 +1,3 @@
-import React from 'react';
 import { Trophy, Tv2, ArrowRight, Plus } from 'lucide-react';
 import { useNavigate } from "react-router-dom"
 

@@ -4,7 +4,6 @@ import SelectGamePlan from './views/SelectGamePlan';
 import MatchConfigurationPage from './views/MatchConfigurationPage';
 import ScoreboardPage from './views/ScoreboardPage';
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
