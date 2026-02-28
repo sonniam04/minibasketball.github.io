@@ -1,4 +1,5 @@
 import React, { use, useEffect, useState } from 'react';
+import {Button, IconButton, EndGameButton} from '../components/button' 
 import { RotateCcw, Play, Timer, Flag, ChevronLeft, ChevronRight, Pause } from 'lucide-react';
 const Scoreboard = () => {
   const [clock, setClock] = useState("00:00")
@@ -172,14 +173,10 @@ const Scoreboard = () => {
 
       {/* --- Footer Control: เล็กที่สุด --- */}
       < div className="flex-none py-2 border-t border-white/5 flex justify-center items-center gap-4 bg-[#110d0a]/50" >
-        <button className="bg-[#1c1610] p-2.5 rounded-xl text-gray-500 border border-white/5 active:scale-90 transition-all"><RotateCcw size={16} /></button>
-        <button onClick={() => setIsActive(!isActive)} className="bg-orange-500 px-10 py-3 rounded-2xl flex items-center gap-3 text-base font-black shadow-lg shadow-orange-500/20 active:scale-95 transition-all">
-          {isActive ? <><Pause size={22} fill="currentColor" /> PAUSE</> : <><Play size={22} fill="currentColor" /> RESUME</>}
-        </button>
-        <button className="bg-[#1c1610] p-2.5 rounded-xl text-gray-500 border border-white/5 active:scale-90 transition-all"><Timer size={16} /></button>
-        <button className="bg-red-500/10 text-red-500 px-5 py-3 rounded-xl flex items-center gap-2 text-[9px] font-black border border-red-500/20 hover:bg-red-500 hover:text-white transition-all">
-          <Flag size={16} /> END GAME
-        </button>
+        <IconButton onClick={()=>{}}><RotateCcw size={16} /></IconButton>
+        <Button onClick={() => setIsActive(!isActive)}>{isActive ? <><Pause size={22} fill="currentColor" /> PAUSE</> : <><Play size={22} fill="currentColor" /> RESUME</>}</Button>
+        <IconButton onClick={()=>{}}><Timer size={16} /></IconButton>
+        <EndGameButton onClick={()=>{}}><Flag size={16} /> END GAME</EndGameButton>
       </div >
 
     </div >

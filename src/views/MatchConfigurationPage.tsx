@@ -1,4 +1,7 @@
 import React, { memo, use, useEffect } from 'react';
+import { Button, CancelButton } from '../components/Button'
+import { InputBox } from '../components/InputBox'
+import { TeamCard, TeamMemberList } from '../components/TeamCard'
 import { useState } from "react"
 import { Users, Settings, Gamepad2, Trash2, Plus, Play, Camera } from 'lucide-react';
 import { useNavigate } from "react-router-dom"
@@ -79,16 +82,14 @@ const MatchConfigurationPage = () => {
         setMemberInput(prev => ({ ...prev, [idx]: "" }))
 
     }
-    const selectButton = (type: any) => 
+    const selectButton = (type: any) =>
         `py-8 rounded-xl border-2
             ${types === type
-                ? "border-orange-500 bg-orange-500 text-white font-bold text-xl"
-                : "border-white/5 bg-[#1a120b] text-gray-400"}`
-    
-
+            ? "border-orange-500 bg-orange-500 text-white font-bold text-xl"
+            : "border-white/5 bg-[#1a120b] text-gray-400"}`
 
     const selectHandle = (type: any) => {
-        
+
         let complete = false
         if (type == "5x5") {
             teams.map((t, i) => (
@@ -105,7 +106,7 @@ const MatchConfigurationPage = () => {
         }
         setTypes(type)
     }
-    const goBack = () => {
+    const handleClickToBack = () => {
         // login สำเร็จ
         navigate("/")
     }
@@ -141,10 +142,6 @@ const MatchConfigurationPage = () => {
                     <h1 className="text-4xl font-bold mb-2">Match Configuration</h1>
                     <p className="text-gray-400">Set up the rules and roster for the upcoming game.</p>
                 </div>
-                <div className="flex gap-3">
-                    <button className="px-4 py-2 bg-[#2a1d15] rounded-lg border border-white/10 text-sm">Load Preset</button>
-                    <button className="px-4 py-2 bg-[#2a1d15] rounded-lg border border-white/10 text-sm">Save Draft</button>
-                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -171,27 +168,9 @@ const MatchConfigurationPage = () => {
                             <h2 className="text-xl font-semibold">Rules & Constraints</h2>
                         </div>
                         <div className="grid grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="text-sm text-gray-400">Match Duration (second)</label>
-                                <div className="relative">
-                                    <input type="text" onChange={(e) => setDuration(Number(e.target.value))} placeholder={`${duration}`} className="w-full bg-[#1a120b] border border-white/10 rounded-xl p-4 pl-12 outline-none" />
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">⏱</span>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-gray-400">Max Score (Points)</label>
-                                <div className="relative">
-                                    <input type="text" onChange={(e) => setMaxScore(Number(e.target.value))} placeholder={`${maxScore}`} className="w-full bg-[#1a120b] border border-white/10 rounded-xl p-4 pl-12 outline-none" />
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">🏀</span>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-gray-400">Round</label>
-                                <div className="relative">
-                                    <input type="text" onChange={(e) => setRound(Number(e.target.value))} placeholder={`${round}`} className="w-full bg-[#1a120b] border border-white/10 rounded-xl p-4 pl-12 outline-none" />
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">🏀</span>
-                                </div>
-                            </div>
+                            <InputBox label='Match Time (second)' onChange={(e) => setDuration(Number(e.target.value))} placeHolder={`${duration}`} Icon='⏱' />
+                            <InputBox label='Max Score (Points)' onChange={(e) => setMaxScore(Number(e.target.value))} placeHolder={`${maxScore}`} Icon='🏀' />
+                            <InputBox label='Round' onChange={(e) => setRound(Number(e.target.value))} placeHolder={`${maxScore}`} Icon='🏀' />
                         </div>
                     </section>
                 </div>
@@ -212,41 +191,17 @@ const MatchConfigurationPage = () => {
                             {/* ตัวอย่าง Team Card */}
                             {
                                 teams.map((t, i) => (
-                                    <div className="bg-[#1a120b] rounded-xl p-4 border border-white/5 space-y-4">
-                                        <div className="flex justify-between items-center">
-                                            <input type="text" placeholder="Enter Team Name" onChange={(e) => setTeams(prev => prev.map((t, idx) => idx == i ? { ...t, team: e.target.value } : t))} className="bg-transparent font-bold outline-none border-b border-white/10 focus:border-orange-500" />
-                                            <button onClick={() => removeTeam(i)} className="text-gray-600 hover:text-red-500"><Trash2 size={16} /></button>
-                                        </div>
+                                    <TeamCard
+                                        onChangeTeamName={(e) => setTeams(prev => prev.map((t, idx) => idx == i ? { ...t, team: e.target.value } : t))}
+                                        onClickRemoveTeam={() => removeTeam(i)}
+                                        value={`${memberInput[i]}`}
+                                        onChangMemberName={(e) => setMemberInput(prev => ({ ...prev, [i]: e.target.value }))}
+                                        onClickAddPlayer={() => addPlayer(i)}
+                                        teamMember={t.member.map((m) => (
+                                            <TeamMemberList name={`${m.name}`} onClickRemovePlayer={() => removePlayer(i, m.name)} />
+                                        ))}
+                                    />
 
-                                        {/* Member Setup Area */}
-                                        <div className="space-y-3">
-                                            <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Members</p>
-
-                                            {/* Member Row (Input) */}
-                                            <div className="flex items-center gap-3 group">
-                                                <div className="w-10 h-10 rounded-full bg-[#2a1d15] border border-dashed border-white/20 flex items-center justify-center cursor-pointer hover:border-orange-500 transition-colors">
-                                                    <Camera size={14} className="text-gray-500" />
-                                                </div>
-                                                <input type="text" value={memberInput[i]} onChange={(e) => setMemberInput(prev => ({ ...prev, [i]: e.target.value }))} className="flex-1 bg-transparent text-sm border-b border-white/5 outline-none focus:border-orange-500" />
-                                                <button onClick={() => addPlayer(i)} className="p-1 bg-orange-500/10 text-orange-500 rounded"><Plus size={14} /></button>
-                                            </div>
-
-                                            {/* Member List (Display Only) */}
-                                            {
-                                                t.member.map((m) => (
-                                                    <div className="space-y-2 mt-4">
-                                                        <div className="flex items-center justify-between p-2 bg-[#2a1d15] rounded-lg">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="w-8 h-8 rounded-full bg-gray-600"></div>
-                                                                <span className="text-sm">{m.name}</span>
-                                                            </div>
-                                                            <button onClick={() => removePlayer(i, m.name)} className="text-gray-600 hover:text-red-500">×</button>
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            }
-                                        </div>
-                                    </div>
                                 ))
                             }
 
@@ -261,10 +216,8 @@ const MatchConfigurationPage = () => {
 
             {/* --- Footer --- */}
             <div className="mt-12 flex justify-end items-center gap-8 border-t border-white/5 pt-8">
-                <button onClick={goBack} className="text-gray-400 hover:text-white font-medium">Cancel</button>
-                <button onClick={goToStart} className="bg-orange-500 hover:bg-orange-600 text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-3 transition-all">
-                    Start Match <Play size={20} fill="currentColor" />
-                </button>
+                <CancelButton onClick={handleClickToBack}>Cancel</CancelButton>
+                <Button onClick={goToStart}>Start Match <Play size={20} fill="currentColor" /></Button>
             </div>
         </div>
     );
