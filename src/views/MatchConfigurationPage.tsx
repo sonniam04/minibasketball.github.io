@@ -1,9 +1,9 @@
-import React, { memo, use, useEffect } from 'react';
-import { Button, CancelButton } from '../components/Button'
+import React, { useEffect } from 'react';
+import { Button, CancelButton } from '../components/BaseButton'
 import { InputBox } from '../components/InputBox'
 import { TeamCard, TeamMemberList } from '../components/TeamCard'
 import { useState } from "react"
-import { Users, Settings, Gamepad2, Trash2, Plus, Play, Camera } from 'lucide-react';
+import { Users, Settings, Gamepad2, Play } from 'lucide-react';
 import { useNavigate } from "react-router-dom"
 const MatchConfigurationPage = () => {
     const navigate = useNavigate()

@@ -1,16 +1,7 @@
-import React, { use, useEffect, useState } from 'react';
-import {Button, IconButton, EndGameButton} from '../components/button' 
+import React, { useEffect, useState } from 'react';
+import { Button, IconButton, EndGameButton } from '../components/BaseButton'
 import { RotateCcw, Play, Timer, Flag, ChevronLeft, ChevronRight, Pause } from 'lucide-react';
 const Scoreboard = () => {
-  const [clock, setClock] = useState("00:00")
-  const [isActive, setIsActive] = useState(false)
-
-  const [quater, setQuater] = useState("1")
-  const [time, setTime] = useState()
-  const [team, setTeam] = useState<Team>({
-    team: "",
-    member: []
-  })
   type Member = {
     name: String,
   }
@@ -18,6 +9,11 @@ const Scoreboard = () => {
     team: String,
     member: Member[]
   }
+  //declare value
+  const [isActive, setIsActive] = useState(false)
+  const [quater, setQuater] = useState("1")
+  const [time, setTime] = useState()
+  //get data from localStorage
   const [maxScore, setMaxScore] = useState(() => {
     const saved = localStorage.getItem('match_config')
     if (saved) {
@@ -25,7 +21,6 @@ const Scoreboard = () => {
       return parsed.maxScore
     }
   })
-
   const [round, setRound] = useState(() => {
     const saved = localStorage.getItem('match_config')
     if (saved) {
@@ -33,7 +28,6 @@ const Scoreboard = () => {
       return parsed.round
     }
   })
-
   const [teams, setTeams] = useState<Team[]>(() => {
     const saved = localStorage.getItem('match_config');
     if (saved) {
@@ -48,7 +42,6 @@ const Scoreboard = () => {
     }
     return []; // สำคัญมาก: ถ้าไม่มีข้อมูลใน localStorage ต้องคืนค่าเริ่มต้นที่นี่
   });
-
   const [score, setScore] = useState<number[]>(teams.map(() => 0));
   const [duration, setDuration] = useState(() => {
     const saved = localStorage.getItem('match_config');
@@ -59,22 +52,7 @@ const Scoreboard = () => {
     }
     return 600;
   });
-
-  const updateScore = (teamIndex: any, point: any) => {
-    if (!isActive) {
-      alert("เกมยังไม่เริ่ม")
-      return
-    }
-    setScore((prev) => ({
-      ...prev, [teamIndex]: (prev[teamIndex] || 0) + point
-    }))
-    if(score[teamIndex]+point>=maxScore){
-      setIsActive(false)
-      alert(teams[teamIndex].team + " Win");
-    }
-  }
-
-
+  //useEffect
   useEffect(() => {
 
     let interval = 0;
@@ -97,7 +75,27 @@ const Scoreboard = () => {
       if (interval) clearInterval(interval);
     };
   }, [isActive, duration])
-
+  useEffect(()=>{
+    const conclusion = {
+      score,
+      teams
+    }
+    localStorage.setItem('conclusion-data', JSON.stringify(conclusion))
+  },[score,teams])
+  //function
+  const updateScore = (teamIndex: any, point: any) => {
+    if (!isActive) {
+      alert("เกมยังไม่เริ่ม")
+      return
+    }
+    setScore((prev) => ({
+      ...prev, [teamIndex]: (prev[teamIndex] || 0) + point
+    }))
+    if (score[teamIndex] + point >= maxScore) {
+      setIsActive(false)
+      alert(teams[teamIndex].team + " Win");
+    }
+  }
   const fomatTime = () => {
     let timeMinute = Math.floor(duration / 60)
     let timeSecond = String(duration % 60)
@@ -107,6 +105,7 @@ const Scoreboard = () => {
     }
     return timeMinute + ":" + timeSecond
   }
+
   return (
     <div className="h-[100dvh] w-full bg-[#110d0a] text-white flex flex-col overflow-hidden font-sans select-none p-2">
 
@@ -145,7 +144,7 @@ const Scoreboard = () => {
                   </div>
                   <h2 className="text-base md:text-xl font-black tracking-tight uppercase leading-none">{t.team}</h2>
                 </div>
-                
+
               </div>
 
               <div className="text-[clamp(3.5rem,15vh,7rem)] md:text-[clamp(5rem,10vw,9rem)] font-black leading-none tabular-nums tracking-tighter text-[#b1c0cf] mx-2">
@@ -173,10 +172,10 @@ const Scoreboard = () => {
 
       {/* --- Footer Control: เล็กที่สุด --- */}
       < div className="flex-none py-2 border-t border-white/5 flex justify-center items-center gap-4 bg-[#110d0a]/50" >
-        <IconButton onClick={()=>{}}><RotateCcw size={16} /></IconButton>
+        <IconButton onClick={() => { }}><RotateCcw size={16} /></IconButton>
         <Button onClick={() => setIsActive(!isActive)}>{isActive ? <><Pause size={22} fill="currentColor" /> PAUSE</> : <><Play size={22} fill="currentColor" /> RESUME</>}</Button>
-        <IconButton onClick={()=>{}}><Timer size={16} /></IconButton>
-        <EndGameButton onClick={()=>{}}><Flag size={16} /> END GAME</EndGameButton>
+        <IconButton onClick={() => { }}><Timer size={16} /></IconButton>
+        <EndGameButton onClick={() => { }}><Flag size={16} /> END GAME</EndGameButton>
       </div >
 
     </div >
